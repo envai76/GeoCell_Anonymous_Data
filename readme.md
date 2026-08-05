@@ -84,6 +84,6 @@ As described in the GeoCell paper, the images were obtained from whole-mounted m
 Consult the README inside each dataset folder before using the data:
 
 - [`GeoCell_Anonymous_Data_Approx/README_Approx.md`](GeoCell_Anonymous_Data_Approx/README_Approx.md)
-- [`GeoCell_Anonymous_Data_Struct/readme.md`](GeoCell_Anonymous_Data_Struct/readme.md)
+- [`GeoCell_Anonymous_Data_Struct/readme.md`](GeoCell_Anonymous_Data_Struct/README_Struct.md)
 
 Those files contain the authoritative dataset-specific descriptions of filename encoding, image-annotation pairing, CSV contents, intended uses, and important caveats.
