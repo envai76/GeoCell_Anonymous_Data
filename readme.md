@@ -1,96 +1,89 @@
-# GeoCell Anonymous Data
+# GeoCell Anonymous RGC Datasets
 
-This directory contains anonymized retinal ganglion cell (RGC) image data. The data are organized into a structured dataset and a location reserved for an approximate dataset representation.
+This repository contains two anonymized retinal ganglion cell (RGC) microscopy datasets associated with the paper:
 
-## Directory hierarchy
+**GeoCell: A Unified Geometric Field for Cell Counting, Localization, and Coarse Delineation**
+
+Both datasets provide RGC microscopy images, point-based ground-truth annotations, and CSV files containing image-level manual counts and annotation-derived automated counts. The automated counts are calculated from the ground-truth annotation images using computer-vision techniques as a quality-control check against the manually reported counts; they are not predictions made directly from the microscopy images.
+
+## Dataset summary
+
+| Dataset | Annotated images | Ground-truth images | Test images without ground truth | Total microscopy images |
+|---|---:|---:|---:|---:|
+| `GeoCell_Anonymous_Data_Approx` | 893 PNG | 893 PNG | 30 PNG | 923 |
+| `GeoCell_Anonymous_Data_Struct` | 791 TIFF | 791 PNG | 0 | 791 |
+| **Repository total** | **1,684** | **1,684** | **30** | **1,714** |
+
+## Repository structure
 
 ```text
 GeoCell_Anonymous_Data/
-|-- GeoCell_Anonymous_Data_Struct/
-|   |-- Dataset_rgc_cell_counts.csv
-|   |-- readme.md
-|   |-- dots/
-|   |   `-- 791 *_centroids.png files
-|   `-- images/
-|       `-- 791 *.tif files
-|-- GeoCell_Anonymous_Data_Approx/
-|   `-- (currently empty)
+|-- README.md
 |-- folder-hierarchy.txt
-`-- README.md
+|-- .gitattributes
+|-- GeoCell_Anonymous_Data_Approx/
+|   |-- README_Approx.md
+|   |-- RGC_images/                         # 893 PNG images
+|   |-- Ground_truth_annotations/           # 893 PNG annotations
+|   |-- test_RGC_Samples_no_Ground_Truth/   # 30 PNG test images
+|   `-- match_auto_and_manaull_counts.csv
+`-- GeoCell_Anonymous_Data_Struct/
+    |-- readme.md
+    |-- RGC_images/                         # 791 TIFF images
+    |-- Ground_truth_annotations/           # 791 PNG centroid annotations
+    `-- Dataset_rgc_cell_counts.csv
 ```
 
-The hierarchy above summarizes repeated files instead of listing every image individually. The complete generated file listing is available in `folder-hierarchy.txt`.
+## Included datasets
 
-## Folder and file contents
+### `GeoCell_Anonymous_Data_Approx`
 
-### `GeoCell_Anonymous_Data_Struct/`
+The Approx dataset contains **893 annotated RGC image samples** and **30 additional test images without released ground-truth annotations**, for a total of **923 microscopy images**.
 
-Contains the structured RGC dataset. The TIFF images, centroid visualizations, and cell-count table use related file identifiers so records can be matched across the dataset.
+- `RGC_images/` contains 893 PNG microscopy images.
+- `Ground_truth_annotations/` contains 893 corresponding PNG point-annotation images.
+- `test_RGC_Samples_no_Ground_Truth/` contains 30 PNG test images without released annotation images.
+- `match_auto_and_manaull_counts.csv` contains image-level manual counts and annotation-derived automated counts.
+- `README_Approx.md` documents the folder contents, filename encoding, pairing rules, ground-truth interpretation, appropriate uses, and caveats.
 
-#### `images/`
+For annotated samples, microscopy images and ground-truth annotations share the same filename. Approx filenames use a terminal digit to encode retinal region: `1` denotes central, `2` middle, and `3` peripheral. Meanings of other filename components should not be assumed without an authoritative mapping.
 
-Contains **791 TIFF (`.tif`) image files**. Example file identifiers include:
+### `GeoCell_Anonymous_Data_Struct`
+
+The Structured dataset contains **791 RGC microscopy images** and **791 corresponding centroid annotation images**, forming **791 paired samples**.
+
+- `RGC_images/` contains 791 TIFF (`.tif`) microscopy images.
+- `Ground_truth_annotations/` contains 791 PNG centroid annotation images.
+- `Dataset_rgc_cell_counts.csv` contains the image identifier, manual count, and annotation-derived automated count.
+- `readme.md` documents the folder contents, filename encoding, pairing rules, ground-truth interpretation, appropriate uses, and caveats.
+
+Structured identifiers generally follow:
 
 ```text
-01-L-C-01.tif
-01-L-M-01.tif
-01-R-P-04.tif
+<animal_id>-<eye_side>-<retinal_region>-<field_number>
 ```
 
-#### `dots/`
+Here, `L` and `R` denote left and right eyes; `C`, `M`, and `P` denote central, middle, and peripheral retinal regions; and the final field number distinguishes sampled imaging fields within a region. Annotation filenames append `_centroids` to the corresponding image identifier.
 
-Contains **791 PNG centroid images**. Their names correspond to the TIFF images in `images/`, with `_centroids` appended to the identifier. For example:
+## Tissue staining and image acquisition
 
-```text
-images/01-L-C-01.tif
-dots/01-L-C-01_centroids.png
-```
+As described in the GeoCell paper, the images were obtained from whole-mounted mouse retinas immunolabeled for RNA-binding protein with multiple splicing (RBPMS), a selective RGC marker. The stained retinal whole mounts were imaged using a Zeiss Axio Imager M2 microscope. The paper reports images of 1400 x 1400 pixels covering approximately 318 x 318 micrometers.
 
-These PNG files appear to provide centroid/dot annotations or visualizations for the corresponding RGC images.
+## Ground-truth interpretation
 
-#### `Dataset_rgc_cell_counts.csv`
-
-Contains image-level cell-count information. Its columns are:
-
-| Column | Description |
-|---|---|
-| `file name` | Image identifier used to match the CSV record to files in `images/` and `dots/`. |
-| `manual count` | Manually recorded cell count. |
-| `auto count` | Automatically generated cell count; some entries may be empty. |
-
-#### `readme.md`
-
-The original README inside the structured dataset. This root README provides the expanded dataset documentation.
-
-### `GeoCell_Anonymous_Data_Approx/`
-
-This folder is intended for the approximate form of the dataset. It was empty when the hierarchy was generated, so its eventual file format and internal organization could not be verified.
+- Ground-truth images provide point or centroid annotations of RGC locations.
+- These annotations are suitable for cell counting and point-localization tasks.
+- They should not be interpreted as pixel-accurate cell boundaries or instance-segmentation masks.
+- Manual counts are the image-level reference counts reported by a domain expert.
+- Automated counts are computed from the annotation images to verify that the number of annotation marks agrees with the reported manual count.
+- Images, annotations, and CSV records should be matched by their stored identifiers, not by directory order.
 
 
-## File naming
+## Dataset-specific documentation
 
-Most image identifiers follow a pattern similar to:
+Consult the README inside each dataset folder before using the data:
 
-```text
-<subject-or-sample>-<L-or-R>-<retinal-region>-<index>
-```
+- [`GeoCell_Anonymous_Data_Approx/README_Approx.md`](GeoCell_Anonymous_Data_Approx/README_Approx.md)
+- [`GeoCell_Anonymous_Data_Struct/readme.md`](GeoCell_Anonymous_Data_Struct/readme.md)
 
-For example, `01-L-C-01` is the identifier shared by the TIFF image, centroid PNG, and corresponding CSV record. Its components indicate:
-
-- `L` and `R`: left and right eyes, respectively.
-- `C`: central region of the retina.
-- `M`: middle region of the retina.
-- `P`: peripheral region of the retina.
-
-The precise meanings of the leading numeric identifier and final index should be documented separately.
-
-Some filenames vary from the dominant hyphenated convention (for example, identifiers beginning with `06L` or `51L`), and a few contain additional punctuation or numbering. Consumers should use the stored identifier exactly rather than reconstructing filenames from an assumed pattern.
-
-## Usage notes
-
-- Preserve folder names and relative paths when downloading or extracting the data.
-- Match images, centroid files, and count records using the complete file identifier.
-- Do not rename files solely to normalize their format, because existing tables or processing code may depend on the current names.
-- Treat blank `auto count` values as missing unless the associated analysis documentation specifies another meaning.
-- Follow all applicable privacy, data-use, and redistribution requirements for the anonymized dataset.
-
+Those files contain the authoritative dataset-specific descriptions of filename encoding, image-annotation pairing, CSV contents, intended uses, and important caveats.
